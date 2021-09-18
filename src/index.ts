@@ -1,7 +1,7 @@
 import * as fs from 'fs-extra'; // eslint-disable-line
 import * as path from 'path'; // eslint-disable-line
 import { AwsCdkTypeScriptApp, AwsCdkTypeScriptAppOptions, Component, SampleDir } from 'projen';
-import { pascalCase } from './pascalCase';
+//  import { pascalCase } from './pascalCase';
 
 export interface AwsCdkAppSyncAppOptions extends AwsCdkTypeScriptAppOptions {
 }
@@ -44,7 +44,7 @@ export class DemoProject extends AwsCdkTypeScriptApp {
 //sample code
 class SampleCode extends Component {
   private readonly demoProject: DemoProject;
-  private readonly devAccount = '111111111111';
+  private readonly devAccount = '607281769355';
   private readonly prodAccount = '222222222222';
   private readonly prodAccount2 = '333333333333';
 
@@ -59,47 +59,48 @@ class SampleCode extends Component {
       return;
     }
 
-    const projectType = pascalCase(this.demoProject.projectName);
+    //  const projectType = pascalCase(this.demoProject.projectName);
+    // const projectType = new string;
 
     new SampleDir(this.demoProject, this.demoProject.srcdir, {
       files: {
-        'main.ts': this.createMainTsContents(this.demoProject.projectName, projectType),
+        'main.ts': this.createMainTsContents(this.demoProject.projectName ),
       },
     });
 
     const libDir = path.join(this.demoProject.srcdir, 'lib');
     new SampleDir(this.demoProject, libDir, {
       files: {
-        [`${this.demoProject.projectName}-stack.ts`]: this.projectStackContents(this.demoProject.projectName, projectType),
+        [`${this.demoProject.projectName}-stack.ts`]: this.projectStackContents(this.demoProject.projectName),
       },
     });
 
-    const testCode = `import '@aws-cdk/assert/jest';
-import { App } from '@aws-cdk/core';
-import { ${projectType}Stack } from '../src/lib/${this.demoProject.projectName}-stack'
-test('Basic Test', () => {
-  const app = new App();
-  const stack = new ${projectType}Stack(app, 'test');
-  expect(stack).toHaveResource('AWS::SNS::Topic');
-});`;
+    //     const testCode = `import '@aws-cdk/assert/jest';
+    // import { App } from '@aws-cdk/core';
+    // import { ${projectType}Stack } from '../src/lib/${this.demoProject.projectName}-stack'
+    // test('Basic Test', () => {
+    //   const app = new App();
+    //   const stack = new ${projectType}Stack(app, 'test');
+    //   expect(stack).toHaveResource('AWS::SNS::Topic');
+    // });`;
 
-    const testdir = path.join(this.demoProject.testdir);
-    new SampleDir(this.demoProject, testdir, {
-      files: {
-        'main.test.ts': testCode,
-      },
-    });
+    //     const testdir = path.join(this.demoProject.testdir);
+    //     new SampleDir(this.demoProject, testdir, {
+    //       files: {
+    //         'main.test.ts': testCode,
+    //       },
+    //     });
   }
 
-  private createMainTsContents(projectName: string, projectType: string): string {
+  private createMainTsContents(projectName: string): string {
     return `import { App } from '@aws-cdk/core';
-import { ${projectType}Stack } from './lib/${projectName}-stack';
+import { ${projectName}Stack } from './lib/${projectName}-stack';
 const DEV_ACCOUNT = '${this.devAccount}';
 const PROD_ACCOUNT = '${this.prodAccount}';
 const PROD2_ACCOUNT = '${this.prodAccount2}';
 const STAGE = process.env.STAGE || 'dev'; // default to dev as the stage
 const ACCOUNT = process.env.ACCOUNT || DEV_ACCOUNT; // default to dev account
-const REGION = process.env.REGION || 'us-east-2'; // default region we are using
+const REGION = process.env.REGION || 'eu-west-1'; // default region we are using
 const app = new App(
   {
     context: {
@@ -113,7 +114,7 @@ const app = new App(
     },
   },
 );
-new ${projectType}Stack(app, \`${projectName}-\${STAGE}\`, {
+new ${projectName}Stack(app, \`${projectName}-\${STAGE}\`, {
   terminationProtection: true,
   description: 'Stack for ${projectName}',
   env: {
@@ -126,14 +127,14 @@ app.synth();`;
 
 
   // custom template
-  private projectStackContents(projectName: string, projectType: string): string {
+  private projectStackContents(projectName: string): string {
     return `import { Construct, Stack, StackProps } from '@aws-cdk/core';
 import { Topic } from '@aws-cdk/aws-sns';
 import { EmailSubscription } from '@aws-cdk/aws-sns-subscriptions';
-export interface ${projectType}StackProps extends StackProps { }
+export interface ${projectName}StackProps extends StackProps { }
 const errorNotificationEmails = ['support@support.com'];
-export class ${projectType}Stack extends Stack {
-  constructor(scope: Construct, id: string, props?: ${projectType}StackProps) {
+export class ${projectName}Stack extends Stack {
+  constructor(scope: Construct, id: string, props?: ${projectName}StackProps) {
     super(scope, id, props);
     const STAGE = this.node.tryGetContext('STAGE');
     const errorNotificationTopic = new Topic(this, '${projectName}-error-notification-topic', {
