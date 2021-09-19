@@ -46,7 +46,7 @@ class SampleCode extends Component {
   private readonly demoProject: DemoProject;
   private readonly devAccount = '666666666666';
   private readonly prodAccount = '888887777';
-  private readonly prodAccount2 = '99999999999';
+  private readonly prodAccount2 = '888887777'';
 
   constructor(project: DemoProject) {
     super(project);
