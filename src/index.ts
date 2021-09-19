@@ -45,7 +45,7 @@ export class DemoProject extends AwsCdkTypeScriptApp {
 class SampleCode extends Component {
   private readonly demoProject: DemoProject;
   private readonly devAccount = '666666666666';
-  private readonly prodAccount = '45556666777';
+  private readonly prodAccount = '888887777';
   private readonly prodAccount2 = '99999999999';
 
   constructor(project: DemoProject) {
